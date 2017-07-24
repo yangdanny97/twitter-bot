@@ -2,13 +2,12 @@
 compliment generating bot for twitter - WIP
 
 Dependencies needed:
-- Django
-- Celery
-- psql??? (not sure if we need a database)
+- python 3.5
+- tweepy
 
 Steps:
-1. Make a Django project, set up bot's twitter account
-2. Write code to interact with twitter API
+1. Set up bot's twitter account and get dev keys for twitter API
+2. Write code to interact with twitter API, write cron scripts to run at regular intervals
 3. Write and test code to generate compliments
 4. Integrate 2 and 3
 5. Test locally with bot account(private) and second test account
@@ -22,5 +21,6 @@ Twitter related documentation to read:
 - working with timelines
 - Twitter ID
 
-Todo:
-discuss server design/necessity of a database, discuss tweet generation method
+Other notes:
+- scraper.py is a script reused from the Proton Compliment Bot project, it is used as a helper to collect the old TheNiceBot's tweets
+- secret.py with API_KEY, API_SECRET, ACCESS_TOKEN, and ACCESS_SECRET are required for this to run, it is not provided in the repo since it's connected to our dev account
