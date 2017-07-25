@@ -9,7 +9,7 @@ class NiceBot:
     Fields:
         api - accesses Twitter API through tweepy
         compliments - a tuple of the set of possible compliments
-        last_mention - the ID of the last mention the NiceBot replied to
+        last_mention - the integer ID of the last mention the NiceBot replied to
     """
     def __init__(self):
         """
@@ -25,15 +25,28 @@ class NiceBot:
         self.compliments = self.load_tweets("tweets.txt")
 
         data = self.load_data()
-        self.last_mention = data[0]
+        if len(data) == 0 or len(data[0])==0:
+            print("""Unable to load data""")
+            self.last_mention = None
+        else:
+            self.last_mention = int(data[0])
 
 
     def main(self):
         """
         The main script for the bot, WIP
         """
-        self.select_and_send_random_compliment()
-        #self.save_data()
+        #Reply to mentions
+        if self.last_mention and self.last_mention>0:
+            mentions = self.api.mentions_timeline(since_id = self.last_mention)
+        else:
+            mentions = self.api.mentions_timeline(count = 10)
+
+        for mention in mentions:
+            self.select_and_send_random_compliment(handle = mention.user.screen_name, reply_id = mention.id)
+            self.last_mention = max(self.last_mention, mention.id)
+
+        self.save_data()
         print("Bot execution complete")
 
 
@@ -50,19 +63,26 @@ class NiceBot:
         return tuple(tweets)
 
 
-    def select_and_send_random_compliment(self,handle=None):
+    def select_and_send_random_compliment(self,handle=None,reply_id=None):
         """
         Selects and returns a random compliment and tweets it
         Params:
-            handle - string of twitter handle of person to tweet to, without the @
+            handle - string of twitter handle of person to tweet to, without the @ (optional)
+            reply_id - int id of tweet to reply to (optional)
+
         """
         random_compliment = random.choice(self.compliments)
-        if DEBUG: print(random_compliment)
-        if handle:
+        if handle and reply_id:
             tweet = "@"+str(handle)+" "+random_compliment+" #NiceBot"
+            self.api.update_status(tweet, reply_id)
+        elif handle:
+            tweet = "@"+str(handle)+" "+random_compliment+" #NiceBot"
+            self.api.update_status(tweet)            
         else:
             tweet = random_compliment+" #NiceBot"
-        self.api.update_status(tweet)
+            self.api.update_status(tweet)
+        if DEBUG: print(tweet)
+        
         
 
     def load_data(self):
