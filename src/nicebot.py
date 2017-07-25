@@ -16,7 +16,8 @@ def main(): #WIP
 
     #Update status
     random_compliment = select_random_tweet("tweets.txt")
-    tweet = "@yangdanny97 "+random_compliment+" #NiceBot"
+    print(random_compliment)
+    tweet = "Testing "+random_compliment+" #NiceBot"
     api.update_status(tweet)
     print("Status update complete")
 
@@ -35,4 +36,4 @@ def select_random_tweet(filename):
 
 if __name__ == "__main__":
     print("Starting...")
-    #main()
+    main()
