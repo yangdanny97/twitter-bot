@@ -32,7 +32,7 @@ def get_tweets(handle, output):
             file.write(tweet+'\n')
 
     except TwythonError:
-        raise RuntimeError("error!") from None
+        print("Twython Error")
 
 def get_unique(inputfile, output):
     """
@@ -41,18 +41,17 @@ def get_unique(inputfile, output):
         inputfile - a string representing the name of the input .txt file, without file extension
         output - a string representing the name of the output file, without file extension
     """
-    file1=open(inputfile+".txt","r")
-    file2=open(output+".txt","w")
+    i=open(inputfile+".txt","r")
+    o=open(output+".txt","w")
     list_of_tweets=[]
-    for line in file1:
+    for line in i:
         if str(line) not in list_of_tweets:
             list_of_tweets.append(str(line))
     count=0
     for tweet in list_of_tweets:
-        print(count)
         count+=1
-        file2.write(tweet)
-
+        o.write(tweet)
+    print("Done. "+str(count)+" unique lines.")
 # Example use case below:
 # get_tweets("TheNiceBot","alltweets")
 # get_unique("alltweets","uniquetweets")
