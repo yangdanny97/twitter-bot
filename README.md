@@ -26,5 +26,4 @@ Other notes:
 - secret.py with API_KEY, API_SECRET, ACCESS_TOKEN, and ACCESS_SECRET are required for this to run, it is not provided in the repo since it's connected to our dev account
 
 To do:
- - get mentions and reply to them
  - select random user to tweet at
