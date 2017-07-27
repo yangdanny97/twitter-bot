@@ -16,7 +16,7 @@ class NiceBotStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         print("Recieved tweet from stream")
         if DEBUG: print(status.user.screen_name, status.text, status.in_reply_to_status_id)
-        self.bot.select_and_send_random_compliment(handle = status.user.screen_name)
+        # self.bot.select_and_send_random_compliment(handle = status.user.screen_name)
         return False
 
     def on_error(self, status_code):
@@ -65,10 +65,10 @@ class NiceBot:
             mentions = self.api.mentions_timeline(since_id = self.last_mention)
         else:
             mentions = self.api.mentions_timeline(count = 10)
-
+        if DEBUG: print(str(len(mentions))+" new mentions found")
         for mention in mentions:
             if mention.in_reply_to_status_id is None:
-                print("Replied to mention"+str(mention.id))
+                if DEBUG: print("Replied to mention"+str(mention.id))
                 self.select_and_send_random_compliment(handle = mention.user.screen_name, reply_id = mention.id)
                 self.last_mention = max(self.last_mention, mention.id)
         
