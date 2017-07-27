@@ -3,13 +3,36 @@ import random, tweepy, time
 
 DEBUG = True
 
+class NiceBotStreamListener(tweepy.StreamListener):
+    """
+    Stream listener for Twitter Streaming API
+    Fields:
+        bot - an instance of the NiceBot
+    """
+    def __init__(self, bot):
+        tweepy.StreamListener.__init__(self)
+        self.bot = bot
+
+    def on_status(self, status):
+        print("Recieved tweet from stream")
+        if DEBUG: print(status.user.screen_name, status.text, status.in_reply_to_status_id)
+        self.bot.select_and_send_random_compliment(handle = status.user.screen_name)
+        return False
+
+    def on_error(self, status_code):
+        if status_code == 420:
+            #returning False in on_data disconnects the stream
+            return False
+
 class NiceBot:
     """
     An instance of the Compliments Bot. This is created whenever the bot runs.
     Fields:
+        auth - stores authentication details
         api - accesses Twitter API through tweepy
         compliments - a tuple of the set of possible compliments
         last_mention - the integer ID of the last mention the NiceBot replied to
+        random_compliment - boolean, whether or not a random person has been complimented
     """
     def __init__(self):
         """
@@ -18,6 +41,7 @@ class NiceBot:
         try:
             auth = tweepy.OAuthHandler(API_KEY, API_SECRET)
             auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+            self.auth = auth
             self.api = tweepy.API(auth)
         except:
             raise RuntimeError("Error. Authenticaton failed")
@@ -31,24 +55,26 @@ class NiceBot:
         else:
             self.last_mention = int(data[0])
 
+    def reply_mentions(self):
+        """
+        Reply to mentions with a compliment
+        """
+        last_mention = self.last_mention
 
-    def main(self):
-        """
-        The main script for the bot, WIP
-        """
-        #Reply to mentions
         if self.last_mention and self.last_mention>0:
             mentions = self.api.mentions_timeline(since_id = self.last_mention)
         else:
             mentions = self.api.mentions_timeline(count = 10)
 
         for mention in mentions:
-            self.select_and_send_random_compliment(handle = mention.user.screen_name, reply_id = mention.id)
-            self.last_mention = max(self.last_mention, mention.id)
-
-        self.save_data()
-        print("Bot execution complete")
-
+            if mention.in_reply_to_status_id is None:
+                print("Replied to mention"+str(mention.id))
+                self.select_and_send_random_compliment(handle = mention.user.screen_name, reply_id = mention.id)
+                self.last_mention = max(self.last_mention, mention.id)
+        
+        if last_mention!=self.last_mention:
+            self.save_data()
+            print("Updated data")
 
     def load_tweets(self,filename):
         """
@@ -61,7 +87,6 @@ class NiceBot:
         for line in file:
             tweets.append(str(line)[:-1])
         return tuple(tweets)
-
 
     def select_and_send_random_compliment(self,handle=None,reply_id=None):
         """
@@ -82,8 +107,6 @@ class NiceBot:
             tweet = random_compliment+" #NiceBot"
             self.api.update_status(tweet)
         if DEBUG: print(tweet)
-        
-        
 
     def load_data(self):
         """
@@ -94,7 +117,6 @@ class NiceBot:
         for line in file:
             data.append(str(line))
         return tuple(data)
-
 
     def save_data(self):
         """
@@ -107,4 +129,10 @@ class NiceBot:
 if __name__ == "__main__":
     print("Starting...")
     bot = NiceBot()
-    bot.main()
+    bot.reply_mentions()
+
+    listener = NiceBotStreamListener(bot)
+    stream  = tweepy.Stream(auth = bot.auth, listener=listener)
+    stream.sample()
+    print("Execution complete")
+    
