@@ -97,10 +97,10 @@ class NiceBot:
 
         """
         random_compliment = random.choice(self.compliments)
-        if handle and reply_id:
+        if handle is not None and reply_id is not None:
             tweet = "@"+str(handle)+" "+random_compliment+" #NiceBot"
             self.api.update_status(tweet, reply_id)
-        elif handle:
+        elif handle is not None:
             tweet = "@"+str(handle)+" "+random_compliment+" #NiceBot"
             self.api.update_status(tweet)            
         else:
