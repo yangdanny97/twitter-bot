@@ -1,5 +1,5 @@
 from secret import *
-import random, tweepy, time
+import random, tweepy, time, traceback
 
 DEBUG = True
 
@@ -20,9 +20,8 @@ class NiceBotStreamListener(tweepy.StreamListener):
         return False
 
     def on_error(self, status_code):
-        if status_code == 420:
-            #returning False in on_data disconnects the stream
-            return False
+        print("Streaming error")
+        return False
 
 class NiceBot:
     """
@@ -133,6 +132,10 @@ if __name__ == "__main__":
 
     listener = NiceBotStreamListener(bot)
     stream  = tweepy.Stream(auth = bot.auth, listener=listener)
-    stream.sample()
+    try:
+        stream.sample()
+    except:
+        print("Stream sample failed")
+        traceback.print_exc()
     print("Execution complete")
     
