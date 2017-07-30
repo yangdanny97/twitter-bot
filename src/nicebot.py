@@ -16,7 +16,7 @@ class NiceBotStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         print("Recieved tweet from stream")
         if DEBUG: print(status.user.screen_name, status.text, status.in_reply_to_status_id)
-        # self.bot.select_and_send_random_compliment(handle = status.user.screen_name)
+        self.bot.select_and_send_random_compliment(handle = status.user.screen_name)
         return False
 
     def on_error(self, status_code):
