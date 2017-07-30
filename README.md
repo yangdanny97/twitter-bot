@@ -1,29 +1,20 @@
 # twitter-bot
-compliment generating bot for twitter - WIP
+compliment generating bot for twitter - live! @NiceBot_Reboot
+
+Inspired by the original @TheNiceBot, which was deactivated in 2016. We scraped the set of 241 unique compliments that it gave, and wrote a bot that has the exact same functionality as the original. Users can request a compliment by mentioning @NiceBot_Reboot, and the bot will also compliment a random user at a set interval. The bot is currently undergoing live testing before deploying to production.
 
 Dependencies needed:
 - python 3.5
 - tweepy
 
-Steps:
-1. Set up bot's twitter account and get dev keys for twitter API
-2. Write code to interact with twitter API, write cron scripts to run at regular intervals
-3. Write and test code to generate compliments
-4. Integrate 2 and 3
-5. Test locally with bot account(private) and second test account
-6. Deploy and test on heroku
-
-Twitter related documentation to read:
-- authentication
-- GET statuses/mentions_timeline
-- POST statuses/update
-- Tweet objects
-- working with timelines
-- Twitter ID
+The bot script (nicebot.py) can be run once to reply to any new mentions and give one random compliment to a random user.
+For production, this will be deployed on Heroku and set to run at every 5 minutes with cron.
 
 Other notes:
 - scraper.py is a script reused from the Proton Compliment Bot project, it is used as a helper to collect the old TheNiceBot's tweets
 - secret.py with API_KEY, API_SECRET, ACCESS_TOKEN, and ACCESS_SECRET are required for this to run, it is not provided in the repo since it's connected to our dev account
 
-To do:
- - select random user to tweet at
+Future Ideas:
+- original compliment generation (essentially porting over the markov chain from Proton, my Alexa compliment bot)
+- automated DM responses
+
