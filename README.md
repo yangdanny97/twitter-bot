@@ -1,5 +1,5 @@
 # twitter-bot
-compliment generating bot for twitter - live! @NiceBot_Reboot
+compliment generating bot for twitter - sporadically testing @NiceBot_Reboot
 
 Inspired by the original @TheNiceBot, which was deactivated in 2016. We scraped the set of 241 unique compliments that it gave, and wrote a bot that has the exact same functionality as the original. Users can request a compliment by mentioning @NiceBot_Reboot, and the bot will also compliment a random user at a set interval. The bot is currently undergoing live testing before deploying to production.
 
@@ -17,4 +17,9 @@ Other notes:
 Future Ideas:
 - original compliment generation (essentially porting over the markov chain from Proton, my Alexa compliment bot)
 - automated DM responses
+
+
+
+Current Progress:
+8/4 Bot complete and livetested twice on 7/30 and 7/31, future plans - few bugfixes and live tests, then a deployment on Heroku
 
