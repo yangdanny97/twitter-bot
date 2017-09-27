@@ -132,10 +132,12 @@ if __name__ == "__main__":
 
     listener = NiceBotStreamListener(bot)
     stream  = tweepy.Stream(auth = bot.auth, listener=listener)
-    try:
-        stream.sample()
-    except:
-        print("Stream sample failed")
-        traceback.print_exc()
+    for i in range(15):
+        try:
+            stream.sample()
+        except:
+            print("Stream sample failed")
+            traceback.print_exc()
+        time.sleep(5)
     print("Execution complete")
     
