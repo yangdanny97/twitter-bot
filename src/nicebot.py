@@ -1,5 +1,5 @@
 from secret import *
-import random, tweepy, time
+import random, tweepy, time, traceback
 
 DEBUG = True
 
@@ -16,13 +16,12 @@ class NiceBotStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         print("Recieved tweet from stream")
         if DEBUG: print(status.user.screen_name, status.text, status.in_reply_to_status_id)
-        # self.bot.select_and_send_random_compliment(handle = status.user.screen_name)
+        self.bot.select_and_send_random_compliment(handle = status.user.screen_name)
         return False
 
     def on_error(self, status_code):
-        if status_code == 420:
-            #returning False in on_data disconnects the stream
-            return False
+        print("Streaming error")
+        return False
 
 class NiceBot:
     """
@@ -97,10 +96,10 @@ class NiceBot:
 
         """
         random_compliment = random.choice(self.compliments)
-        if handle and reply_id:
+        if handle is not None and reply_id is not None:
             tweet = "@"+str(handle)+" "+random_compliment+" #NiceBot"
             self.api.update_status(tweet, reply_id)
-        elif handle:
+        elif handle is not None:
             tweet = "@"+str(handle)+" "+random_compliment+" #NiceBot"
             self.api.update_status(tweet)            
         else:
@@ -133,6 +132,12 @@ if __name__ == "__main__":
 
     listener = NiceBotStreamListener(bot)
     stream  = tweepy.Stream(auth = bot.auth, listener=listener)
-    stream.sample()
+    for i in range(15):
+        try:
+            stream.sample()
+        except:
+            print("Stream sample failed")
+            traceback.print_exc()
+        time.sleep(5)
     print("Execution complete")
     
